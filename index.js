@@ -6,7 +6,8 @@ var urlRoot = "https://api.github.com";
 // NCSU Enterprise endpoint:
 //var urlRoot = "https://api.github.ncsu.edu";
 
-var userId = "yy2111";
+var userId = "BlackRoseRipp";
+var newrepo = "New Repo";
 var config = {};
 // Retrieve our api token from the environment variables.
 config.token = process.env.GITHUBTOKEN;
@@ -25,8 +26,8 @@ if (process.env.NODE_ENV != 'test')
 {
 	(async () => {
 		await listAuthenicatedUserRepos();
-		//await listBranches(userId, "your repo");
-		//await createRepo(userId,newrepo);
+		await listBranches(userId, "HW4");
+		await createRepo(userId,newrepo);
 		//await createIssue(userId, repo, issue);
 		//await enableWikiSupport(userId,repo);
 
@@ -94,7 +95,7 @@ function listAuthenicatedUserRepos()
 // 1. Write code for listBranches in a given repo under an owner. See list branches
 async function listBranches(owner,repo)
 {
-	let options = getDefaultOptions(`/`, "GET");
+	let options = getDefaultOptions('/repos/'+owner+'/'+repo+"/branches", "GET");
 
 	// Send a http request to url and specify a callback that will be called upon its return.
 	return new Promise(function(resolve, reject)
@@ -102,6 +103,14 @@ async function listBranches(owner,repo)
 		request(options, function (error, response, body) {
 
 			// console.debug( options );
+			var obj = JSON.parse(body);
+			console.log(repo+" branches");
+			for( var i = 0; i < obj.length; i++ )
+			{
+				var name = obj[i].name;
+				console.log( name );
+			}
+			
 			resolve( JSON.parse(body) );
 
 		});
@@ -111,12 +120,16 @@ async function listBranches(owner,repo)
 // 2. Write code to create a new repo
 async function createRepo(owner,repo)
 {
-	let options = getDefaultOptions("/", "POST");
-
+	let options = getDefaultOptions("/user/repos", "POST");
+	options.body = {"name": repo};
+	console.log(options);
+	
 	// Send a http request to url and specify a callback that will be called upon its return.
 	return new Promise(function(resolve, reject)
 	{
 		request(options, function (error, response, body) {
+			
+			
 
 			resolve( response.statusCode );
 
@@ -128,11 +141,14 @@ async function createRepo(owner,repo)
 async function createIssue(owner,repo, issueName, issueBody)
 {
 	let options = getDefaultOptions("/", "POST");
+	
 
 	// Send a http request to url and specify a callback that will be called upon its return.
 	return new Promise(function(resolve, reject)
 	{
 		request(options, function (error, response, body) {
+			
+			
 
 			resolve( response.statusCode );
 
