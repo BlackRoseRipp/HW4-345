@@ -7,7 +7,7 @@ var urlRoot = "https://api.github.com";
 //var urlRoot = "https://api.github.ncsu.edu";
 
 var userId = "BlackRoseRipp";
-var newrepo = "New Repo";
+var repo = "HW4-345";
 var config = {};
 // Retrieve our api token from the environment variables.
 config.token = process.env.GITHUBTOKEN;
@@ -26,10 +26,10 @@ if (process.env.NODE_ENV != 'test')
 {
 	(async () => {
 		await listAuthenicatedUserRepos();
-		await listBranches(userId, "HW4");
-		await createRepo(userId,newrepo);
-		//await createIssue(userId, repo, issue);
-		//await enableWikiSupport(userId,repo);
+		await listBranches(userId, repo);
+		await createRepo(userId,repo);
+		await createIssue(userId, repo, "My Issue");
+		//await enableWikiSupport(userId,"HW4");
 
 	})()
 }
@@ -101,6 +101,7 @@ async function listBranches(owner,repo)
 	return new Promise(function(resolve, reject)
 	{
 		request(options, function (error, response, body) {
+			
 
 			// console.debug( options );
 			var obj = JSON.parse(body);
@@ -111,7 +112,8 @@ async function listBranches(owner,repo)
 				console.log( name );
 			}
 			
-			resolve( JSON.parse(body) );
+			resolve( obj );
+			
 
 		});
 	});
@@ -121,15 +123,12 @@ async function listBranches(owner,repo)
 async function createRepo(owner,repo)
 {
 	let options = getDefaultOptions("/user/repos", "POST");
-	options.body = {"name": repo};
-	console.log(options);
+	options.json = {name: repo};
 	
 	// Send a http request to url and specify a callback that will be called upon its return.
 	return new Promise(function(resolve, reject)
 	{
 		request(options, function (error, response, body) {
-			
-			
 
 			resolve( response.statusCode );
 
@@ -137,10 +136,15 @@ async function createRepo(owner,repo)
 	});
 
 }
+
 // 3. Write code for creating an issue for an existing repo.
 async function createIssue(owner,repo, issueName, issueBody)
 {
-	let options = getDefaultOptions("/", "POST");
+	let options = getDefaultOptions("/repos/"+owner+"/"+repo+"/issues", "POST");
+	options.json = {
+		title: issueName,
+		body: issueBody
+	};
 	
 
 	// Send a http request to url and specify a callback that will be called upon its return.
@@ -159,14 +163,15 @@ async function createIssue(owner,repo, issueName, issueBody)
 // 4. Write code for editing a repo to enable wiki support.
 async function enableWikiSupport(owner,repo)
 {
-	let options = getDefaultOptions("/", "PATCH");
+	let options = getDefaultOptions("/repos/"+owner+"/"+repo, "PATCH");
+	options.json = {has_wiki: true};
 
 	// Send a http request to url and specify a callback that will be called upon its return.
 	return new Promise(function(resolve, reject)
 	{
 		request(options, function (error, response, body) {
 
-			resolve( JSON.parse(body) );
+			resolve( JSON.parse(JSON.stringify(body)) );
 		});
 	});	
 }
