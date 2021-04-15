@@ -122,7 +122,9 @@ async function listBranches(owner,repo)
 async function createRepo(owner,repo)
 {
 	let options = getDefaultOptions("/user/repos", "POST");
-	options.json = {name: repo};
+	options.json = {
+		name: repo
+	};
 	
 	// Send a http request to url and specify a callback that will be called upon its return.
 	return new Promise(function(resolve, reject)
@@ -163,7 +165,9 @@ async function createIssue(owner,repo, issueName, issueBody)
 async function enableWikiSupport(owner,repo)
 {
 	let options = getDefaultOptions("/repos/"+owner+"/"+repo, "PATCH");
-	options.json = {has_wiki: true};
+	options.json = { 
+		has_wiki: true
+	};
 
 	// Send a http request to url and specify a callback that will be called upon its return.
 	return new Promise(function(resolve, reject)
