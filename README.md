@@ -1,5 +1,5 @@
 # HW4-345
-This is my completed repo for HW4.
+This is my completed repo for SSW 345 HW4.
 
 There are a lot of created issues because I was debugging when I finished the segment in the code to create issues.
 
