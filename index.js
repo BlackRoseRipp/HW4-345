@@ -105,7 +105,6 @@ async function listBranches(owner,repo)
 
 			// console.debug( options );
 			var obj = JSON.parse(body);
-			console.log(repo+" branches");
 			for( var i = 0; i < obj.length; i++ )
 			{
 				var name = obj[i].name;
